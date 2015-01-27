@@ -1,0 +1,17 @@
+float rectFill;
+float posX;
+float posY;
+
+void setup(){
+ size(500, 500); 
+ background(255);
+}
+ 
+void draw(){
+  fill(rectFill);
+  rectFill = random(255);
+  noStroke();
+  rect(posX,posY,50,10);
+  posX = random(0,width);
+  posY = random(0,height);
+}
