@@ -1,0 +1,9 @@
+void setup(){
+  float value_in_m;
+  value_in_m = in_to_m(20);
+  println(value_in_m);
+}
+
+float in_to_m(float in1){
+  return in1*2.54;
+}
