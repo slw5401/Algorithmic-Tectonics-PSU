@@ -19,14 +19,14 @@ void setup() {
   // to variable 'rectX' 
   cp5.addSlider("rectX")
      .setPosition(100,50)
-     .setRange(0,500)
+     .setRange(1,500)
      ;
      
   // add a horizontal sliders, the value of this slider will be linked
   // to variable 'rectY' 
   cp5.addSlider("rectY")
      .setPosition(100,75)
-     .setRange(0,500)
+     .setRange(1,500)
      ;
      
   // add a horizontal sliders, the value of this slider will be linked
