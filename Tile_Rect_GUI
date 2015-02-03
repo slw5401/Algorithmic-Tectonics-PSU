@@ -1,0 +1,65 @@
+import controlP5.*;
+
+ControlP5 cp5;
+
+int rectX = 50;
+int rectY = 50;
+int rValue = 255;
+int gValue = 0;
+int bValue = 0;
+
+void setup() {
+  size(500,500);
+  noStroke();
+  cp5 = new ControlP5(this);
+  
+  // add a horizontal sliders, the value of this slider will be linked
+  // to variable 'rectX' 
+  cp5.addSlider("rectX")
+     .setPosition(100,50)
+     .setRange(0,500)
+     ;
+     
+  // add a horizontal sliders, the value of this slider will be linked
+  // to variable 'rectY' 
+  cp5.addSlider("rectY")
+     .setPosition(100,75)
+     .setRange(0,500)
+     ;
+     
+  // add a horizontal sliders, the value of this slider will be linked
+  // to variable 'rValue' 
+  cp5.addSlider("rValue")
+     .setPosition(100,100)
+     .setRange(0,255)
+     ;
+     
+  // add a horizontal sliders, the value of this slider will be linked
+  // to variable 'gValue' 
+  cp5.addSlider("gValue")
+     .setPosition(100,125)
+     .setRange(0,255)
+     ;
+     
+  // add a horizontal sliders, the value of this slider will be linked
+  // to variable 'bValue' 
+  cp5.addSlider("bValue")
+     .setPosition(100,150)
+     .setRange(0,255)
+     ;
+}
+
+void draw(){
+  frameRate(5);
+  draw_rect(rectX,rectY,rValue,gValue,bValue);
+}
+
+void draw_rect(int rect_size_x,int rect_size_y,int r,int g,int b){
+  for(int i=0;i<width;i+=rect_size_x){
+    for(int j=0;j<height;j+=rect_size_y){
+      noStroke();
+      fill(random(r),random(g),random(b));
+      rect(i,j,rect_size_x,rect_size_y);
+    }
+  }
+}
