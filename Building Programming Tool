@@ -1,0 +1,128 @@
+//import peasycam for 3D environment
+import peasy.*;
+PeasyCam cam;
+
+
+//import XlsReader
+import de.bezier.data.*;
+XlsReader reader;
+
+
+//load OBJexporter
+import nervoussystem.obj.*;
+boolean record;
+
+
+//number of rows in Excel sheet
+int rows = 110;
+
+dataSphere[] dataSpheres = new dataSphere[rows]; // An array of spheres
+
+
+void setup (){
+  size( 1000, 800, P3D );
+  cam = new PeasyCam(this, 10);
+  cam.setMinimumDistance(10);
+  cam.setMaximumDistance(5000);
+  
+  
+  reader = new XlsReader( this, "workbook.xls" );    // assumes file to be in the data folder
+
+
+loadData();    //call function to load Excel data
+
+
+}
+
+
+
+
+void draw(){
+  lights();
+  
+  //////////////////   OBJexporter Start  //////////////////
+   if (record) {
+    beginRecord("nervoussystem.obj.OBJExport", "programmingSpheres.obj");
+  }
+  
+  /////////////////////////////////////////////////////////
+  
+  
+  background(255);
+  translate(width/2,height/2,0);
+  rotateX(-.5);
+  rotateY(-.5);
+  
+  
+
+
+  for (int i = 0; i < dataSpheres.length; i ++ ) { // Run each Sphere using a for loop.
+    dataSpheres[i].display();
+  }
+
+  
+
+}
+
+
+//create a function to load Excel data
+void loadData(){
+  for (int i = 0; i < rows; i++){
+       println( reader.getString( i, 0 ));    //gathers room names
+       println( reader.getInt( i, 1 ));       //gathers room square footage
+       println( reader.getInt( i, 2 ));       //gathers room level
+       println( reader.getInt( i, 4 ));       //gathers room r value
+       println( reader.getInt( i, 5 ));       //gathers room g value
+       println( reader.getInt( i, 6 ));       //gathers room b value
+       dataSpheres[i] = new dataSphere(0,0,reader.getInt(i,2),reader.getInt(i,1)/4,reader.getString(i,0),reader.getInt(i,4),reader.getInt(i,5),reader.getInt(i,6));    //apply Excel data to spheres      
+  }
+  
+//////////////////    OBJexporter End    //////////////////
+  
+  if (record) {
+    endRecord();
+    record = false;
+  }
+  
+/////////////////////////////////////////////////////////
+
+}
+
+
+void keyPressed()
+{
+  if (key == 'r') {
+    record = true;
+  }
+}
+
+
+
+//create class for spheres
+class dataSphere{
+  float x,y,z,radius,r,g,b;
+  String roomName;
+  dataSphere (float xpos, float ypos, float zpos, float rad, String room, float rvalue, float gvalue, float bvalue){
+    x=xpos;
+    y=ypos;
+    z=zpos;
+    radius=rad;
+    roomName=room;
+    r=rvalue;
+    g=gvalue;
+    b=bvalue;
+  }
+  void display(){
+    //create sphere
+    noStroke();
+    translate(x,y,z);
+    fill(r,g,b);
+    sphere(radius);
+    
+    //attach text to sphere
+    textSize(20);
+    fill(0);
+    textAlign(CENTER);
+    text(roomName,x,y,z+radius+20);
+  }
+}
