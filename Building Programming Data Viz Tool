@@ -1,0 +1,193 @@
+Table table;
+float total_area;
+float[] arc_lengths;
+int rows;
+//int columns;
+//int numberOfConnections;
+
+ArrayList<PVector> marker_positions = new ArrayList<PVector>();
+ArrayList<String> program_elements = new ArrayList<String>();
+
+int radius;
+int arc_render_technique;
+float marker_radius = 180;
+
+void setup(){
+ size(800,800);
+ noStroke();
+ background(50);
+
+ 
+ table = loadTable("workbook.csv", "header");
+ println(table.getRowCount() + " total rows in table"); 
+ 
+
+ //initializing array for arc_lengths
+ arc_lengths = new float[table.getRowCount()];
+ 
+ for (TableRow row : table.rows()) {
+    
+    String program_element = row.getString("Room Name");     
+    program_elements.add(program_element);
+    rows++;
+    total_area = total_area + row.getFloat("Area");
+    
+  }
+
+  println(total_area);
+  
+  int iter = 0;
+  
+  for (TableRow row : table.rows()) {
+    String program_element = row.getString("Room Name");     
+    arc_lengths[iter] =  (row.getFloat("Area")*2)/ total_area;
+    println(program_element + " Arc length: " + arc_lengths[iter]);
+    iter++;
+  } 
+ 
+}
+
+void draw(){
+   
+  //draws outer gray arc
+   noFill();
+   stroke(100);
+   strokeWeight(25);
+   arc(width/2,height/2,555,555,0,PI*2);
+   
+  //draws middle gray arc  
+   noFill();
+   stroke(90);
+   strokeWeight(30);
+   arc(width/2,height/2,490,490,0,PI*2);
+
+  //draws inner gray arc
+   noFill();
+   stroke(80);
+   strokeWeight(50);
+   arc(width/2,height/2,400,400,0,PI*2);
+   
+   int iter = 0;
+   float start_angle = 0;
+   float stop_angle = 0;
+ 
+   
+   
+    for (TableRow row : table.rows()) {
+       
+       fill(row.getFloat("R Value"),row.getFloat("G Value"),row.getFloat("B Value"));      //gathers rgb values from .csv file
+
+       if (row.getFloat("R Value")==177){      //draws purple arcs
+             strokeCap(SQUARE);
+             strokeWeight(35);
+             stroke(row.getFloat("R Value"),row.getFloat("G Value"),row.getFloat("B Value"));
+             radius = 490;
+             arc_render_technique = OPEN;
+       }
+                           
+       if (row.getFloat("R Value")==248){      //draws yellow arcs
+             strokeCap(SQUARE);
+             strokeWeight(30);
+             stroke(row.getFloat("R Value"),row.getFloat("G Value"),row.getFloat("B Value"));
+             radius = 555;
+             arc_render_technique = OPEN; 
+       }
+                    
+       if (row.getFloat("R Value")==0){        //draws blue arcs
+             strokeWeight(1);
+             stroke(80);
+             radius = 460;
+             arc_render_technique = PIE;
+       }       
+       
+       stop_angle = (arc_lengths[iter]*PI)+start_angle;
+       
+       
+       arc(width/2,height/2,radius,radius,start_angle,stop_angle,arc_render_technique);
+       
+       
+       
+       
+       // draw a circle in arc's center///////////
+       
+       noStroke();
+       fill(255);
+       
+       marker_positions.add(new PVector((width/2)+marker_radius*cos(start_angle+((stop_angle-start_angle)/2)), (height/2)+marker_radius*sin(start_angle+((stop_angle-start_angle)/2))));
+       
+       ellipse(marker_positions.get(iter).x, marker_positions.get(iter).y, 5, 5);
+       
+       
+       
+       
+       
+       println("-> "+ start_angle);
+       println("->> "+ stop_angle);
+       
+       start_angle = stop_angle;
+       iter ++;
+      
+      noLoop();
+    }
+    
+    
+    
+    //draws center ellipse for cropping////////////////////////////////////////////
+    noStroke();
+    fill(50);
+    ellipseMode(CENTER);
+    ellipse(width/2,height/2,350,350); 
+    
+    
+    
+    
+    //evaluates matrix and draws web of lines connecting arcs////////////////////
+    for (TableRow row : table.rows()) {
+      
+      println("");
+      println("");
+      println("EVALUATING ROW: " +  row.getString("Room Name"));
+      
+      for (int i = 0; i < rows; i++ ) {
+  
+        String eval_element = program_elements.get(i);
+        
+        try{
+          String isLinked = row.getString(eval_element);
+          
+          println("     AGAINST: " + eval_element + ": " + isLinked);
+          if (isLinked.equals("TRUE")){
+            strokeWeight(1);
+            stroke(255);
+            line (marker_positions.get(i).x, marker_positions.get(i).y,marker_positions.get(i+20).x, marker_positions.get(i+20).y);
+          }
+        }
+        catch (IllegalArgumentException e){
+        }
+      }
+     
+    }
+
+
+
+    //draws intermediary gray rings for cropping///////////////////////////////////
+    //this ensures that the graphic comes out with the cleanest ring edges possible
+    strokeWeight(7);
+    stroke(50);
+    noFill();
+    ellipseMode(CENTER);
+    ellipse(width/2,height/2,455,455);
+
+    strokeWeight(5);
+    stroke(50);
+    noFill();
+    ellipseMode(CENTER);
+    ellipse(width/2,height/2,525,525);    
+
+    strokeWeight(5);
+    stroke(50);
+    noFill();
+    ellipseMode(CENTER);
+    ellipse(width/2,height/2,585,585);    
+
+}
