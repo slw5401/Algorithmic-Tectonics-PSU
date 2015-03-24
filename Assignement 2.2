@@ -1,0 +1,72 @@
+/////import XlsReader/////
+import de.bezier.data.*;
+XlsReader reader;
+
+//////////////////////////
+
+
+//number of rows in Excel sheet
+int rows = 110;
+
+dataSphere[] dataSpheres = new dataSphere[rows]; // An array of spheres
+
+
+void setup(){
+ size(800,800);
+ noStroke();
+ background(50);
+ 
+ reader = new XlsReader( this, "workbook.xls" );    // assumes file to be in the data folder
+ 
+ loadData();    //call function to load Excel data
+}
+
+
+void draw(){
+  for (int i = 0; i < dataSpheres.length; i ++ ) { // Run each Sphere using a for loop.
+    dataSpheres[i].display();
+  }
+}
+
+
+//create a function to load Excel data
+void loadData(){
+  for (int i = 0; i < rows; i++){
+       println( reader.getString( i, 0 ));    //gathers room names
+       println( reader.getInt( i, 1 ));       //gathers room square footage
+       println( reader.getInt( i, 2 ));       //gathers room r value
+       println( reader.getInt( i, 3 ));       //gathers room g value
+       println( reader.getInt( i, 4 ));       //gathers room b value
+       dataSpheres[i] = new dataSphere(random(width),random(height),sqrt(reader.getInt(i,1)),reader.getString(i,0),reader.getInt(i,2),reader.getInt(i,3),reader.getInt(i,4));    //apply Excel data to spheres      
+  }
+}
+
+
+
+
+//create class for spheres
+class dataSphere{
+  float x,y,radius,r,g,b;
+  String roomName;
+  dataSphere (float xpos, float ypos, float rad, String room, float rvalue, float gvalue, float bvalue){
+    x=xpos;
+    y=ypos;
+    radius=rad;
+    roomName=room;
+    r=rvalue;
+    g=gvalue;
+    b=bvalue;
+  }
+  void display(){
+    //create sphere
+    noStroke();
+    fill(r,g,b);
+    ellipse(x,y,radius,radius);
+    
+    //attach text to sphere
+    textSize(10);
+    fill(0);
+    textAlign(CENTER);
+    text(roomName,x,y);
+  }
+}
