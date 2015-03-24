@@ -1,0 +1,94 @@
+/////import XlsReader/////
+import de.bezier.data.*;
+XlsReader reader;
+
+//////////////////////////
+
+//number of rows in Excel sheet
+int rows = 110;
+
+
+void setup(){
+ size(800,800);
+ noStroke();
+ background(50);
+ 
+ reader = new XlsReader( this, "workbook.xls" );    // assumes file to be in the data folder
+ 
+ loadData();    //call function to load Excel data
+}
+
+void draw(){
+  //inner arc = education spaces
+    noFill();
+    stroke(80);
+    strokeWeight(50);
+    arc(width/2,height/2,400,400,0,PI*2);
+    
+    noFill();
+    stroke(0,153,204);
+    strokeWeight(50);
+    arc(width/2,height/2,400,400,0,PI*1.48);
+  
+  //middle arc = office spaces  
+    noFill();
+    stroke(90);
+    strokeWeight(30);
+    arc(width/2,height/2,490,490,0,PI*2);
+    
+    noFill();
+    stroke(177,74,142);
+    strokeWeight(30);
+    arc(width/2,height/2,490,490,PI*1.48,PI*1.8143);
+    
+  //outer arc = collaborative spaces
+    noFill();
+    stroke(100);
+    strokeWeight(25);
+    arc(width/2,height/2,555,555,0,PI*2);
+    
+    noFill();
+    stroke(248,215,49);
+    strokeWeight(25);
+    arc(width/2,height/2,555,555,PI*1.8143,PI*2);
+}
+
+
+
+//create class for arcs
+class arcProgram{
+  float x,y,radius,r,g,b,start,stop;
+  //String roomName;
+  arcProgram (float xpos, float ypos, float rad, float rvalue, float gvalue, float bvalue, float startvalue, float stopvalue){
+    x=xpos;
+    y=ypos;
+    radius=rad;
+    //roomName=room;
+    r=rvalue;
+    g=gvalue;
+    b=bvalue;
+    start=startvalue;
+    stop=stopvalue;
+  }
+  void display(){
+    //create arc
+    noFill();
+    stroke(r,g,b);
+    strokeWeight(40);
+    arc(x,y,radius,radius,start,stop);
+  }
+}
+
+
+
+//create a function to load Excel data
+void loadData(){
+  for (int i = 0; i < rows; i++){
+       println( reader.getString( i, 0 ));    //gathers room names
+       println( reader.getInt( i, 1 ));       //gathers room square footage
+       println( reader.getInt( i, 2 ));       //gathers room r value
+       println( reader.getInt( i, 3 ));       //gathers room g value
+       println( reader.getInt( i, 4 ));       //gathers room b value
+       //dataSpheres[i] = new dataSphere(random(width),random(height),sqrt(reader.getInt(i,1)),reader.getString(i,0),reader.getInt(i,2),reader.getInt(i,3),reader.getInt(i,4));    //apply Excel data to spheres      
+  }
+}
