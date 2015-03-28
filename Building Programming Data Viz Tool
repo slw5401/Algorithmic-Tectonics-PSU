@@ -2,8 +2,6 @@ Table table;
 float total_area;
 float[] arc_lengths;
 int rows;
-//int columns;
-//int numberOfConnections;
 
 ArrayList<PVector> marker_positions = new ArrayList<PVector>();
 ArrayList<String> program_elements = new ArrayList<String>();
@@ -70,6 +68,7 @@ void draw(){
    int iter = 0;
    float start_angle = 0;
    float stop_angle = 0;
+   int j = 0;
  
    
    
@@ -90,7 +89,7 @@ void draw(){
              strokeWeight(30);
              stroke(row.getFloat("R Value"),row.getFloat("G Value"),row.getFloat("B Value"));
              radius = 555;
-             arc_render_technique = OPEN; 
+             arc_render_technique = OPEN;
        }
                     
        if (row.getFloat("R Value")==0){        //draws blue arcs
@@ -109,13 +108,13 @@ void draw(){
        
        
        // draw a circle in arc's center///////////
-       
        noStroke();
        fill(255);
        
        marker_positions.add(new PVector((width/2)+marker_radius*cos(start_angle+((stop_angle-start_angle)/2)), (height/2)+marker_radius*sin(start_angle+((stop_angle-start_angle)/2))));
        
        ellipse(marker_positions.get(iter).x, marker_positions.get(iter).y, 5, 5);
+       
        
        
        
@@ -143,6 +142,7 @@ void draw(){
     
     //evaluates matrix and draws web of lines connecting arcs////////////////////
     for (TableRow row : table.rows()) {
+      j++;
       
       println("");
       println("");
@@ -159,16 +159,25 @@ void draw(){
           if (isLinked.equals("TRUE")){
             strokeWeight(1);
             stroke(255);
-            line (marker_positions.get(i).x, marker_positions.get(i).y,marker_positions.get(i+20).x, marker_positions.get(i+20).y);
+            line (marker_positions.get(j-1).x, marker_positions.get(j-1).y, marker_positions.get(i).x, marker_positions.get(i).y);
           }
         }
         catch (IllegalArgumentException e){
+        }
+        catch (IndexOutOfBoundsException e){
         }
       }
      
     }
 
 
+
+
+    strokeCap(SQUARE);
+    stroke(80);
+    strokeWeight(50);
+    noFill();
+    arc(width/2,height/2,400,400,PI*1.5,PI*2);
 
     //draws intermediary gray rings for cropping///////////////////////////////////
     //this ensures that the graphic comes out with the cleanest ring edges possible
@@ -188,6 +197,6 @@ void draw(){
     stroke(50);
     noFill();
     ellipseMode(CENTER);
-    ellipse(width/2,height/2,585,585);    
+    ellipse(width/2,height/2,585,585);
 
 }
